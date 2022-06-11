@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num: "0.1",
 	name: "This is just a test",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.1</h3><br>
+		- Added some Prestige Upgrades.<br>
+		- Added the testige layer, which is basically the same layer as the prestige layer just based on prestige points instead.<br>
+		- This will most likely be temporarily<br><br>
 	<h3>v0.0</h3><br>
 		- First Version.<br>
 		- Points and Prestige Points were already a thing.`
@@ -43,6 +47,10 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['t'].points.add(1))
+	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12)).times(player['t'].points.add(1))
+	if (hasUpgrade('p', 32) && !hasUpgrade('r', 11)) gain = new Decimal(0)
+	if (hasUpgrade('p', 32) && hasUpgrade('r', 11)) gain = gain.add(100)
 	return gain
 }
 
@@ -56,7 +64,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return hasUpgrade('t', 22)
 }
 
 
