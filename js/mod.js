@@ -19,6 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br>
+<h3>v0.3.1</h3><br>
+		- Actually changed the endgame to Prestige Milestone 1<br><br>
 <h3>v0.3</h3><br>
 		- Added a softcap and hardcap to prestige points<br>
 		- Added two prestige upgrades and a prestige milestone<br>
@@ -77,7 +79,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.b.points.gte(25) && player.pp.points.gte(25)
+	return hasMilestone('p',0)
 }
 
 
