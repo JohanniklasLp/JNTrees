@@ -31,7 +31,7 @@ addLayer("p", {
             return new Decimal(10000000).times(upgradeEffect('p', 33))
         else return new Decimal(10000000)
     },
-    softcapPower: new Decimal(10),
+    softcapPower: new Decimal(0.25),
     gainExp() { // Calculate the exponent on main currency from bonuses
         if (hasUpgrade('p', 33) && player.p.points.gte(new Decimal(15000000).times(upgradeEffect('p', 33)))) return decimalZero
         else if (!hasUpgrade('p', 33) && player.p.points.gte(new Decimal(15000000))) return decimalZero
@@ -48,7 +48,6 @@ addLayer("p", {
         }],
         "blank"
     ],
-    softcapPower: new Decimal(0.5),
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},

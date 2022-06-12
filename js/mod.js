@@ -19,6 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br>
+<h3>v0.3.2</h3><br>
+		- Fix for softcap not working as intended<br><br>
 <h3>v0.3.1</h3><br>
 		- Actually changed the endgame to Prestige Milestone 1<br><br>
 <h3>v0.3</h3><br>
