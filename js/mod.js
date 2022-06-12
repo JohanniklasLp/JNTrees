@@ -13,11 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "This is just a test",
+	num: "0.2",
+	name: "Playing around with basic mechanics",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3>v0.2</h3><br>
+		- Hard reset is recommended<br>
+		- Reworked the Layer 1 reset layer, it's now the prestige reset layer<br>
+		- Renamed testige layer, it's now the Prestige Booster layer<br>
+		- Added the Power Plant layer<br>
+		- When you choose either Power Plants or Prestige Boosters, the other one will get more expensive (once you have one of each, both will behave as if you chose them first) <br>
+		- Some balancing changes<br>
+		- Current Endgame: 25 Power Plants and 25 Prestige Generators<br><br>
 <h3>v0.1</h3><br>
 		- Added some Prestige Upgrades.<br>
 		- Added the testige layer, which is basically the same layer as the prestige layer just based on prestige points instead.<br>
@@ -47,10 +55,10 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['t'].points.add(1))
-	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12)).times(player['t'].points.add(1))
-	if (hasUpgrade('p', 32) && !hasUpgrade('r', 11)) gain = new Decimal(0)
-	if (hasUpgrade('p', 32) && hasUpgrade('r', 11)) gain = gain.add(100)
+	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['b'].points.divide(10).add(1))
+	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12)).times(player['b'].points.divide(10).add(1))
+	if (hasUpgrade('p', 32) && !hasUpgrade('c', 11)) gain = new Decimal(0)
+	if (hasUpgrade('p', 32) && hasUpgrade('c', 11) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
 	return gain
 }
 
@@ -64,7 +72,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade('t', 22)
+	return player.b.points.gte(25) && player.pp.points.gte(25)
 }
 
 
