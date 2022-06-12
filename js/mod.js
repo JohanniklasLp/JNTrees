@@ -13,19 +13,24 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "Playing around with basic mechanics",
+	num: "0.3",
+	name: "Milestones are fun",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h2>Current Endgame: Prestige Milestone 1</h2><br>
+<h3>v0.3</h3><br>
+		- Added a softcap and hardcap to prestige points<br>
+		- Added two prestige upgrades and a prestige milestone<br>
+		- Added two Prestige Booster and two Power Plant Milestones<br>
+		- Replaced a Prestige Booster and a Power Plant Upgrade with a Milestone<br><br>
 <h3>v0.2</h3><br>
 		- Hard reset is recommended<br>
 		- Reworked the Layer 1 reset layer, it's now the prestige reset layer<br>
 		- Renamed testige layer, it's now the Prestige Booster layer<br>
 		- Added the Power Plant layer<br>
 		- When you choose either Power Plants or Prestige Boosters, the other one will get more expensive (once you have one of each, both will behave as if you chose them first) <br>
-		- Some balancing changes<br>
-		- Current Endgame: 25 Power Plants and 25 Prestige Generators<br><br>
+		- Some balancing changes<br><br>
 <h3>v0.1</h3><br>
 		- Added some Prestige Upgrades.<br>
 		- Added the testige layer, which is basically the same layer as the prestige layer just based on prestige points instead.<br>
@@ -38,7 +43,7 @@ let winText = `Congratulations! You have reached the current end of the game.`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "getSoftcap"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -56,7 +61,7 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['b'].points.divide(10).add(1))
-	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12)).times(player['b'].points.divide(10).add(1))
+	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
 	if (hasUpgrade('p', 32) && !hasUpgrade('c', 11)) gain = new Decimal(0)
 	if (hasUpgrade('p', 32) && hasUpgrade('c', 11) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
 	return gain
