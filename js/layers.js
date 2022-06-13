@@ -52,14 +52,21 @@ addLayer("p", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    doReset(resettingLayer){ 
+        let keep = [];
+        if (layers[resettingLayer].row > this.row) player.p.points = new Decimal(0);
+        if (hasMilestone("cp", 0) || hasMilestone("m", 0)) keep.push("upgrades");
+        if (hasMilestone("cp", 0) || hasMilestone("m", 0)) keep.push("milestones");
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
     layerShown(){return true},
     passiveGeneration() { return (hasUpgrade('pp',13))?upgradeEffect('pp', 13)/100:0 },
     milestones: {
-        0: {requirementDescription: "5,000,000 Points",
-            done() {return player.points.gte(5000000)}, // Used to determine when to give the milestone
-            effectDescription: "Unlock two new layers (WIP, currently the endgame screen)",
+        1: {requirementDescription: "5,000,000 Points",
+            done() {return player.points.gte(5000000) || hasMilestone("cp", 0)}, // Used to determine when to give the milestone
+            effectDescription: "Unlock two new layers",
             unlocked() {
-                return hasUpgrade('p', 31) && hasUpgrade('p', 33)
+                return (hasUpgrade('p', 31) && hasUpgrade('p', 33)) || hasMilestone("cp", 0)
             },
         },
     },
@@ -141,7 +148,7 @@ addLayer("b", {
         return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(10).add(1))
     },
     requires: function() {
-        if(player['pp'].best > 0 && player['b'].best == 0) return new Decimal(15000)
+        if(player['pp'].best > 0 && !hasMilestone('b',2)) return new Decimal(15000)
         else return new Decimal(10)
     },
     base: 2.5,
@@ -163,16 +170,27 @@ addLayer("b", {
     hotkeys: [
         {key: "b", description: "B: Reset for Prestige Boosters", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    doReset(resettingLayer){ 
+        let keep = [];
+        if (layers[resettingLayer].row > this.row) player.p.points = new Decimal(0);
+        if (hasMilestone("cp", 2) && layers[resettingLayer].row == 2) keep.push("upgrades");
+        if (hasMilestone("cp", 1) && layers[resettingLayer].row == 2) keep.push("milestones");
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
     layerShown(){return true},
     milestones: {
         0: {requirementDescription: "9 Prestige Boosters",
-            done() {return player[this.layer].best.gte(9)}, // Used to determine when to give the milestone
+            done() {return player[this.layer].best.gte(9) || hasMilestone("cp", 1)}, // Used to determine when to give the milestone
             effectDescription: "You can buy max Prestige Boosters",
         },
         1: {requirementDescription: "25 Prestige Boosters",
-            done() {return player[this.layer].best.gte(25)}, // Used to determine when to give the milestone
+            done() {return player[this.layer].best.gte(25) || hasMilestone("cp", 0)}, // Used to determine when to give the milestone
             effectDescription: "Unlocks a prestige upgrade",
         },
+        2: {requirementDescription: "1 Power Plant",
+        done() {return (player.b.points.gte(1) && player.pp.points.gte(1)) || hasMilestone("cp", 1)}, // Used to determine when to give the milestone
+        effectDescription: "Prestige Boosters behave as if you chose them first",
+    }
     },
     upgrades: {
         11: {
@@ -297,7 +315,7 @@ addLayer("pp", {
         return " which are generating " + format(player['pp'].best) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(1 + upgradeEffect('pp', 11) / 100)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 0.5)
     },
     requires: function() {
-        if(player['b'].best > 0 && player['pp'].best == 0) return new Decimal(15000)
+        if(player['b'].best > 0 && !hasMilestone('pp',2)) return new Decimal(15000)
         else return new Decimal(10)
     },
     base: 2.5,
@@ -319,16 +337,28 @@ addLayer("pp", {
     hotkeys: [
         {key: "o", description: "O: Reset for Power Plant", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    doReset(resettingLayer){ 
+        let keep = [];
+        if (layers[resettingLayer].row > this.row) player.pp.points = new Decimal(0);
+        if (layers[resettingLayer].row > this.row) player.pp.power.points = new Decimal(0);
+        if (hasMilestone("m", 2) && layers[resettingLayer].row == 2) keep.push("upgrades");
+        if (hasMilestone("m", 1) && layers[resettingLayer].row == 2) keep.push("milestones");
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
     layerShown(){return true},
     milestones: {
         0: {requirementDescription: "9 Power Plants",
-            done() {return player[this.layer].best.gte(9)}, // Used to determine when to give the milestone
+            done() {return player[this.layer].best.gte(9) || hasMilestone("m", 1)}, // Used to determine when to give the milestone
             effectDescription: "You can buy max Power Plants",
         },
         1: {requirementDescription: "25 Power Plants",
-            done() {return player[this.layer].best.gte(25)}, // Used to determine when to give the milestone
+            done() {return player[this.layer].best.gte(25) || hasMilestone("cp", 0) || hasMilestone("m", 0)}, // Used to determine when to give the milestone
             effectDescription: "Unlocks a prestige upgrade",
         },
+        2: {requirementDescription: "1 Prestige Booster",
+        done() {return (player.b.points.gte(1) && player.pp.points.gte(1)) || hasMilestone("m", 2)}, // Used to determine when to give the milestone
+        effectDescription: "Power Plants behave as if you chose them first",
+    }
     },
     upgrades: {
         11: {
@@ -359,5 +389,129 @@ addLayer("pp", {
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "%/s" }, // Add formatting to the effect
             cost: new Decimal(5),
         }
+    }
+})
+
+addLayer("cp", {
+    name: "Challenge Point", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "CP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    branches: ["b"],
+    color: "#FF009B",
+    effectDescription() {
+        if (player.cp.points == 0) return " decreasing the challenge goals by 0%"
+        else return " decreasing the challenge goals by " + player.cp.points.sqrt().log(10).pow(2).min(99).mul(100).round().divide(100) + "%"
+    },
+    requires: function() {
+        return new Decimal(5000000)
+    },
+    resource: "Challenge Points", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.75,
+    roundUpCost: true,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "c", description: "C: Reset for Challenge Points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasMilestone('p',1)},
+    milestones: {
+        0: {requirementDescription: "1 Challenge Point",
+            done() {return player[this.layer].best.gte(1)}, // Used to determine when to give the milestone
+            effectDescription: "You keep Prestige Upgrades and Milestones on all resets",
+        },
+        1: {requirementDescription: "3 Challenge Points",
+            done() {return player[this.layer].best.gte(3)}, // Used to determine when to give the milestone
+            effectDescription: "You keep all Prestige Booster Milestones on all row 3 resets",
+        },
+        2: {requirementDescription: "10 Challenge Points",
+            done() {return player[this.layer].best.gte(10)}, // Used to determine when to give the milestone
+            effectDescription: "You keep all Prestige Booster Upgrades on all row 3 resets",
+        }
+    },
+    upgrades: {
+        /*11: {
+            title: "Accumulator",
+            description: "Prestige Points boost maximum power capacity",
+            effect() {
+                return Math.pow(player['p'].points,0.25)
+            },
+            effectDisplay() { return "+" + format(upgradeEffect(this.layer, this.id)) + "%" }, // Add formatting to the effect
+            cost: new Decimal(1),
+        },*/
+    }
+})
+
+addLayer("m", {
+    name: "Market spaces", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    branches: ["pp"],
+    color: "#9B00FF",
+    effectDescription() {
+        return " unlocking " + player.m.points.min(6) + " buyables (max of 6) and increasing their effects by x" + player.m.points.sqrt().sqrt()   
+    },
+    requires: function() {
+        if (player.cp.best.gte(1) && !player.m.best.gte(3)) return new Decimal(500000000)
+        else return new Decimal(5000000)
+    },
+    resource: "Market Spaces", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.75,
+    roundUpCost: true,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "m", description: "M: Reset for Market Spaces", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasMilestone('p',1)},
+    milestones: {
+        0: {requirementDescription: "1 Market Space",
+            done() {return player[this.layer].best.gte(1)}, // Used to determine when to give the milestone
+            effectDescription: "You keep Prestige Upgrades and Milestones on all resets",
+        },
+        1: {requirementDescription: "3 Market Spaces",
+            done() {return player[this.layer].best.gte(3)}, // Used to determine when to give the milestone
+            effectDescription: "You keep all Power Plant Milestones on all row 3 resets",
+        },
+        2: {requirementDescription: "10 Market Spaces",
+            done() {return player[this.layer].best.gte(10)}, // Used to determine when to give the milestone
+            effectDescription: "You keep all Power Plant Upgrades on all row 3 resets",
+        }
+    },
+    upgrades: {
+        /*11: {
+            title: "Accumulator",
+            description: "Prestige Points boost maximum power capacity",
+            effect() {
+                return Math.pow(player['p'].points,0.25)
+            },
+            effectDisplay() { return "+" + format(upgradeEffect(this.layer, this.id)) + "%" }, // Add formatting to the effect
+            cost: new Decimal(1),
+        },*/
     }
 })

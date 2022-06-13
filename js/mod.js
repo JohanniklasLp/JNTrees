@@ -13,12 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: "Milestones are fun",
+	num: "0.4",
+	name: "This is becoming challenging",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-<h2>Current Endgame: Prestige Milestone 1</h2><br>
+<h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h3>v0.4pre</h3><br>
+		- Added 2 new layers with Milestones<br>
+		- The functionality of both layers is still missing, besides the Milestones<br>
+		- Added some Milestones in existing layers (those will be moved to achievements once I add them)<br><br>
 <h3>v0.3.2</h3><br>
 		- Fix for softcap not working as intended<br><br>
 <h3>v0.3.1</h3><br>
