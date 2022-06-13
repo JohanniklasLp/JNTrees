@@ -19,6 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h3>v0.4pre3</h3><br>
+		- the changes in the reset layer weren't reflected in the point gain equation
 <h3>v0.4pre2</h3><br>
 		- Some Bugfixes<br>
 		- Changed the reset layer<br>
@@ -75,8 +77,8 @@ function getPointGen() {
 	let gain = new Decimal(1)
 	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['b'].points.divide(10).add(1))
 	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
-	if (hasUpgrade('p', 32) && !hasUpgrade('c', 11)) gain = new Decimal(0)
-	if (hasUpgrade('p', 32) && hasUpgrade('c', 11) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
+	if (hasUpgrade('p', 32) && !hasMilestone('c', 0)) gain = new Decimal(0)
+	if (hasUpgrade('p', 32) && hasMilestone('c', 0) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
 	if (player.points.gte(10000000)) gain = gain.pow(0.5)
 	if (player.points.gte(20000000)) gain = gain.pow(0.5)
 	if (player.points.gte(30000000)) gain = gain.pow(0.5)
