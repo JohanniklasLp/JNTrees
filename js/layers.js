@@ -64,7 +64,7 @@ addLayer("p", {
     milestones: {
         1: {requirementDescription: "5,000,000 Points",
             done() {return player.points.gte(5000000) || hasMilestone("cp", 0)}, // Used to determine when to give the milestone
-            effectDescription: "Unlock two new layers",
+            effectDescription: "Unlock two new layers (WIP, will still give you the endgame screen)",
             unlocked() {
                 return (hasUpgrade('p', 31) && hasUpgrade('p', 33)) || hasMilestone("cp", 0)
             },
@@ -110,7 +110,7 @@ addLayer("p", {
         32: {
             title: "Inflation?",
             description: function() {
-                if (hasUpgrade('c', 11)) return "Gives you an additional 100 points per second. Not affected by multipliers. Only works once you do a row two reset."
+                if (hasMilestone('c', 0)) return "Gives you an additional 100 points per second. Not affected by multipliers. Only works once you do a row two reset."
                 else if (hasUpgrade('p', 32) && player['c'].points > 0) return "I told you!"
                 else if (player['c'].points > 0) return "Don't klick this, it will just disable point gain again. Get the 'I'm sorry' Upgrade first!"
                 else if (hasUpgrade('p', 32)) return "GOTCHA! This upgrade actually disables point gain."
@@ -184,7 +184,7 @@ addLayer("b", {
             effectDescription: "You can buy max Prestige Boosters",
         },
         1: {requirementDescription: "25 Prestige Boosters",
-            done() {return player[this.layer].best.gte(25) || hasMilestone("cp", 0)}, // Used to determine when to give the milestone
+            done() {return player[this.layer].best.gte(25) || hasMilestone("cp", 0) || hasMilestone("m", 0)}, // Used to determine when to give the milestone
             effectDescription: "Unlocks a prestige upgrade",
         },
         2: {requirementDescription: "1 Power Plant",
@@ -222,8 +222,8 @@ addLayer("b", {
     addLayer("c", {
         name: "clicker", // This is optional, only used in a few places, If absent it just uses the layer id.
         symbol: function() {
-            if(hasUpgrade('c', 12)) return "C"
-            else if (player['c'].points > 0||hasUpgrade('c', 11)) return "R"
+            if(hasUpgrade('c', 11)) return "C"
+            else if (player['c'].points > 0||hasMilestone('c', 0)) return "R"
             else return "RIP"}, // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         startData() { return {
@@ -233,24 +233,40 @@ addLayer("b", {
         doReset(layer){
             return
         },
-        onPrestige(){
-            if(hasUpgrade('c', 12)) return
-            doReset("b", true)
-            return
-            
-        },
         branches: ["p"],
         effectDescription() {
-            if(hasUpgrade('c', 12)) return " which do nothing other than provide side entertainment<br>You can safely ignore this layer, nothing besides 'I'm sorry' provides any boosts.<br>But if you keep clicking, you might find a whole clicker minigame in this layer (not yet)"
+            if(hasUpgrade('c', 11)) return " which do nothing other than provide side entertainment.<br>You can safely ignore this layer.<br><br>But if you keep clicking, you might find a whole clicker minigame in this layer (not yet)"
             else return "which reset the Prestige Layer"
         },
+        buyables: {
+            11: {
+                unlocked() {return hasUpgrade('c', 11)},
+                cost(x) { return new Decimal(0) },
+                display() { return "Click me for 1 clicker point" },
+                canAfford() { return true },
+                buy() {
+                    player[this.layer].points = player[this.layer].points.add(1)
+                },
+            },
+        },
+        tabFormat:  [
+                        "main-display",
+                        ["prestige-button", "", function (){ return hasUpgrade("c", 11) ? {'display': 'none'} : {}}],
+                        "milestones",
+                        "blank",
+                        "buyables",
+                        "blank",
+                        "upgrades",
+                    ],
+                    
+        canReset() {return !hasUpgrade('c', 11)},
         color: "#FF0000",
         requires: new Decimal(0),//player[this.layer].points,//.add(1).mult(25), // Can be a function that takes requirement increases into account
-        resource:  function() {if(hasUpgrade('c', 12)) return "clicker points"
+        resource:  function() {if(hasUpgrade('c', 11)) return "clicker points"
         else return "free prestige resets"}, // Name of prestige currency
-        baseResource: function() {if(hasUpgrade('c', 12)) return "clicker points"
+        baseResource: function() {if(hasUpgrade('c', 11)) return "clicker points"
         else return "points"}, // Name of resource prestige is based on
-        baseAmount() {if(hasUpgrade('c', 12)) return player['c'].points 
+        baseAmount() {if(hasUpgrade('c', 11)) return player['c'].points 
         else return player.points}, // Get the current amount of baseResource
         type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: 0.5, // Prestige currency exponent
@@ -262,29 +278,32 @@ addLayer("b", {
             return new Decimal(1)
         },
         row: 0, // Row the layer is in on the tree (0 is the first row)
-        layerShown(){return hasUpgrade('p', 32)||player['c'].points > 0||hasUpgrade('c', 11)},
+        layerShown(){return hasUpgrade('p', 32)||player['c'].points > 0||hasMilestone('c', 0)},
+        milestones: {
+            0: {
+                requirementDescription: "I'm Sorry",
+                done() {return player[this.layer].best.gte(1)}, // Used to determine when to give the milestone
+                effectDescription: "Disables the current effect of the inflation upgrade and makes it actually give you 100 points per second instead.",
+                unlocked() {
+                    return (!hasUpgrade('c', 11))
+                },
+            },
+        },
         upgrades: {
             11: {
-                title: "I'm sorry",
-                description: function() {
-                    return "Disables the current effect of the inflation upgrade and makes it actually give you 100 points per second instead."
-                }, 
-                cost: new Decimal(1)
-            },
-            12: {
                 unlocked() {
-                    return player['c'].points > 24 || hasUpgrade('c', 12)
+                    return player['c'].points > 24 || hasUpgrade('c', 11)
                 },
                 title: "Clicker",
                 description: function() {
-                    if (hasUpgrade('c', 12)) return "This layer is now a clicker layer and will no longer reset the prestige layer."
+                    if (hasUpgrade('c', 11)) return "This layer is now a clicker layer and will no longer reset the prestige layer."
                     if(player['c'].points < 100) return "Do you really need 25 resets or did you just want this to turn this into a clicker?"
                     else if (player['c'].points < 200) return "Appearently you do, so feel free to continue while I keep increasing the price of this upgrade"
                     else if (player['c'].points < 250) return "You know what? This upgrade does nothing anyways, so I'll just give it to you once you reach 250 resets"
                     else return "Here you go, the useless upgrade is yours"
                 },
                 cost: function() { 
-                    if(hasUpgrade('c', 12) || player['c'].points >= 200) return new Decimal(250)
+                    if(hasUpgrade('c', 11) || player['c'].points >= 200) return new Decimal(250)
                     else return Math.min(250,Math.max(100,player['c'].points.add(1))) 
                 }
             },

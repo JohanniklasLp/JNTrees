@@ -1,6 +1,6 @@
 let modInfo = {
-	name: "Treeception",
-	id: "treeception",
+	name: "Just a test of the tree mechanics",
+	id: "JNBasic",
 	author: "Johanniklas",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
@@ -19,6 +19,11 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h3>v0.4pre2</h3><br>
+		- Some Bugfixes<br>
+		- Changed the reset layer<br>
+		- Added a softcap or two to points<br>
+		- Renamed the tree. This comes with a one-time hard reset, since I also changed the ID<br><br>
 <h3>v0.4pre</h3><br>
 		- Added 2 new layers with Milestones<br>
 		- The functionality of both layers is still missing, besides the Milestones<br>
@@ -72,6 +77,9 @@ function getPointGen() {
 	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
 	if (hasUpgrade('p', 32) && !hasUpgrade('c', 11)) gain = new Decimal(0)
 	if (hasUpgrade('p', 32) && hasUpgrade('c', 11) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
+	if (player.points.gte(10000000)) gain = gain.pow(0.5)
+	if (player.points.gte(20000000)) gain = gain.pow(0.5)
+	if (player.points.gte(30000000)) gain = gain.pow(0.5)
 	return gain
 }
 
@@ -81,6 +89,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	"Points are softcapped at 10 million"
 ]
 
 // Determines when the game "ends"
