@@ -19,6 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h3>v0.4pre3.3</h3><br>
+		- fixed Prestige Milestone 1 not having the correct id, thus the endgame screen not appearing when you get it<br><br>
 <h3>v0.4pre3.2</h3><br>
 		- fixed the patchnotes lol<br><br>
 <h3>v0.4pre3.1</h3><br>
