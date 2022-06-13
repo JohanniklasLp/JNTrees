@@ -238,6 +238,9 @@ addLayer("b", {
             if(hasUpgrade('c', 11)) return " which do nothing other than provide side entertainment.<br>You can safely ignore this layer.<br><br>But if you keep clicking, you might find a whole clicker minigame in this layer (not yet)"
             else return "which reset the Prestige Layer"
         },
+        onPrestige() {
+            if (!hasUpgrade('c', 11)) layerDataReset("p", [])
+        },
         buyables: {
             11: {
                 unlocked() {return hasUpgrade('c', 11)},

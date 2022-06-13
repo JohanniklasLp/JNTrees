@@ -19,6 +19,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h3>v0.4pre3.1</h3><br>
+		- reset-layer bugfixes
 <h3>v0.4pre3</h3><br>
 		- the changes in the reset layer weren't reflected in the point gain equation
 <h3>v0.4pre2</h3><br>
