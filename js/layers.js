@@ -63,10 +63,10 @@ addLayer("p", {
     passiveGeneration() { return (hasUpgrade('pp',13))?upgradeEffect('pp', 13)/100:0 },
     milestones: {
         0: {requirementDescription: "5,000,000 Points",
-            done() {return player.points.gte(5000000) || hasMilestone("cp", 0)}, // Used to determine when to give the milestone
+            done() {return player.points.gte(5000000) || hasMilestone("cp", 0) || hasMilestone("m", 0)}, // Used to determine when to give the milestone
             effectDescription: "Unlock two new layers (WIP, will still give you the endgame screen)",
             unlocked() {
-                return (hasUpgrade('p', 31) && hasUpgrade('p', 33)) || hasMilestone("cp", 0)
+                return (hasUpgrade('p', 31) && hasUpgrade('p', 33)) || hasMilestone("cp", 0) || hasMilestone("m", 0)
             },
         },
     },
