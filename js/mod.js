@@ -89,7 +89,8 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	"Points are softcapped at 10 million"
+	"This tree is deprecated and will no longer get updates."
+	"I will probably reuse that branch once I actually create the Treeception tree"
 ]
 
 // Determines when the game "ends"
