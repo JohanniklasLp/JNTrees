@@ -429,7 +429,8 @@ addLayer("cp", {
         else return " decreasing the challenge goals by " + player.cp.points.sqrt().log(10).pow(2).min(99).mul(100).round().divide(100) + "%"
     },
     requires: function() {
-        return new Decimal(5000000)
+        if (player.m.best.gte(1) && !player.cp.best.gte(3)) return new Decimal(500000000)
+        else return new Decimal(5000000)
     },
     resource: "Challenge Points", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
