@@ -97,11 +97,11 @@ addLayer("p", {
     },
     midsection: [
         ["display-text", function() {
-            if(hasUpgrade('p', 33)) return "Prestige Points are softcapped at " + new Decimal(10000000).times(upgradeEffect('p', 33)).divide(10000).floor().divide(100) + " Million"
+            if(hasUpgrade('p', 33)) return "Prestige Points are softcapped at " + format(new Decimal(10000000).times(upgradeEffect('p', 33)).divide(1000000)) + " Million"
             else return "Prestige Points are softcapped at " + new Decimal(10) + " Million"
         }],
         ["display-text", function() {
-            if(hasUpgrade('p', 33)) return "and hardcapped at " + new Decimal(15000000).times(upgradeEffect('p', 33).times(100).floor().divide(100)).divide(10000).floor().divide(100) + " Million"
+            if(hasUpgrade('p', 33)) return "and hardcapped at " + format(new Decimal(15000000).times(upgradeEffect('p', 33)).divide(1000000)) + " Million"
             else return "and hardcapped at " + new Decimal(15) + " Million"
         }],
         "blank"
@@ -221,11 +221,11 @@ addLayer("b", {
     canBuyMax: function() {return hasMilestone('b', 0)},
     color: "#BB004B",
     effectDescription() {
-        if (inChallenge("cp",11) && hasChallenge("cp",12)) return " increasing the prestige row 1 and 'Inflation?' upgrade cost and multiplying the other prestige row 2 upgrade cost by " + format(player['b'].best.pow(10)) + "</b> (based on best) and multiplying their effect by " + player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1) + " (based on current)<br>as well as multiplying point gain by " + player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1)
+        if (inChallenge("cp",11) && hasChallenge("cp",12)) return " increasing the prestige row 1 and 'Inflation?' upgrade cost and multiplying the other prestige row 2 upgrade cost by " + format(player['b'].best.pow(10)) + "</b> (based on best) and multiplying their effect by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)<br>as well as multiplying point gain by" + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1))
         if (inChallenge("cp",11)) return " increasing the prestige row 1 and 'Inflation?' upgrade cost and multiplying the other prestige row 2 upgrade cost by " + format(player['b'].best.pow(10)) + "</b> (based on best) and multiplying their effect by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)"
-        if (inChallenge("cp",12) && hasChallenge("cp",12)) return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + player['b'].points.divide(2).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1) + " (based on current)<br>as well as multiplying point gain by " + player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1)
+        if (inChallenge("cp",12) && hasChallenge("cp",12)) return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(2).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)<br>as well as multiplying point gain by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1))
         if (inChallenge("cp",12)) return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(2).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)"
-        if (hasChallenge("cp",12)) return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)<br>as well as multiplying point gain by " + player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1)
+        if (hasChallenge("cp",12)) return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).add(1)) + " (based on current)<br>as well as multiplying point gain by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).add(1))
         else return " decreasing the prestige row 1 upgrade cost by " + format(player['b'].best) + "</b> (based on best, minimum of 0) and multiplying their effect by " + format(player['b'].points.divide(10).times(buyableEffect("m",12)).add(1)) + " (based on current)"
     },
     requires: function() {
@@ -427,10 +427,10 @@ addLayer("pp", {
         let mult = new Decimal(buyableEffect("m",11)).max(1)
         if (hasUpgrade('pp', 11)) mult = mult.times(new Decimal(upgradeEffect('pp', 11)).divide(100).add(1))
         if(inChallenge("cp",11) && hasChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation and point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 2.5)
-        if(inChallenge("cp",12) && hasChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, dividing the prestige point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 0.5) + " and increasing point generation by " + new Decimal(Math.sqrt(new Decimal (Math.sqrt(player['pp'].power.points)))).times(challengeEffect("cp",11)).times(50).floor().divide(100)
+        if(inChallenge("cp",12) && hasChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, dividing the prestige point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 0.5) + " and increasing point generation by " + format(new Decimal(Math.sqrt(new Decimal (Math.sqrt(player['pp'].power.points)))).times(challengeEffect("cp",11)).divide(2))
         if(inChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 2.5)
         if(inChallenge("cp",12)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, dividing the prestige point generation by " + format(Math.sqrt(Math.sqrt(player['pp'].power.points)) * 0.5)
-        if(hasChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation and point generation by " + format(new Decimal(Math.sqrt(new Decimal (Math.sqrt(player['pp'].power.points)))).times(challengeEffect("cp",11)).times(50).floor().divide(100))
+        if(hasChallenge("cp",11)) return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation and point generation by " + format(new Decimal(Math.sqrt(new Decimal (Math.sqrt(player['pp'].power.points)))).times(challengeEffect("cp",11)).divide(2))
         return " which are generating " + format(player['pp'].best.times(mult)) + " Power per second, with a limit of " + format(player['pp'].best.times(250).times(mult)) + " (based on best).<br><br>You have " + format(player['pp'].power.points) + " power, increasing the prestige point generation by " + format(new Decimal(Math.sqrt(new Decimal (Math.sqrt(player['pp'].power.points)))).times(challengeEffect("cp",11)) / 2)
     },
     requires: function() {
@@ -527,7 +527,7 @@ addLayer("cp", {
     effectDescription() {
         let t1 = " unlocking " + player.cp.total + " Challenges (based on total, max of 6) and"
         if (player.cp.points == 0) return t1 + " decreasing the challenge goals by 0%"
-        else return t1 + " decreasing the challenge goals by " + player.cp.points.sqrt().log(10).pow(2).min(99).times(100).floor().divide(100) + "%"
+        else return t1 + " decreasing the challenge goals by " + format(player.cp.points.sqrt().log(10).pow(2).min(99)) + "%"
     },
     requires: function() {
         if (inChallenge("m",11) || inChallenge("cp",11) || inChallenge("cp",12) || inChallenge("cp",21) || inChallenge("cp",22) || inChallenge("cp",31) || inChallenge("cp",32)) return new Decimal(1/0)
@@ -573,12 +573,12 @@ addLayer("cp", {
             name: "Boosted Power",
             challengeDescription: "Increase the effect of power, but Prestige Booster massively increase the cost of prestige Upgrades<br>This challenge ignores the 'keep prestige upgrades' milestones",
             unlocked() {return player.cp.best.gte(1)},
-            goal() { return new Decimal(500000).times(new Decimal(10).pow(challengeCompletions(this.layer,this.id))).times(new Decimal(1).subtract(player.cp.points.sqrt().log(10).pow(2).min(99).times(100).floor().divide(10000))) },
+            goal() { return new Decimal(500000).times(new Decimal(10).pow(challengeCompletions(this.layer,this.id))).times(new Decimal(1).subtract(player.cp.points.sqrt().log(10).pow(2).min(99).divide(100))) },
             onEnter() {
                 player.cp.activeChallenge = 11;
                 doReset("cp", true)
             },
-            rewardDescription() {return "Increase the effect of power, and power effect multiplies point gain per completion<br>Currently: x" + this.rewardEffect() + "<br>Completions: " + challengeCompletions(this.layer,this.id) + "/10"},
+            rewardDescription() {return "Increase the effect of power, and power effect multiplies point gain per completion<br>Currently: x" + format(this.rewardEffect()) + "<br>Completions: " + challengeCompletions(this.layer,this.id) + "/10"},
             goalDescription() {return format(this.goal()) + " Points"},
             canComplete() {return player.points.gte(this.goal())},
             rewardEffect() {return new Decimal (challengeCompletions(this.layer,this.id)).times(0.25).add(1)},
@@ -588,12 +588,12 @@ addLayer("cp", {
             name: "Powered Boosts",
             challengeDescription: "Prestige Booster have a stronger effect, but power decreases the prestige point generation",
             unlocked() {return player.cp.best.gte(2)},
-            goal() { return new Decimal(1000000).times(new Decimal(10).pow(challengeCompletions(this.layer,this.id))).times(new Decimal(1).subtract(player.cp.points.sqrt().log(10).pow(2).min(99).times(100).floor().divide(10000))) },
+            goal() { return new Decimal(1000000).times(new Decimal(10).pow(challengeCompletions(this.layer,this.id))).times(new Decimal(1).subtract(player.cp.points.sqrt().log(10).pow(2).min(99).divide(100))) },
             onEnter() {
                 player.cp.activeChallenge = 12;
                 doReset("cp", true)
             },
-            rewardDescription() {return "Increase the effect of Prestige Booster, and Prestige Booster effect multiplies point gain per completion<br>Currently: x" + this.rewardEffect() + "<br>Completions: " + challengeCompletions(this.layer,this.id) + "/10"},
+            rewardDescription() {return "Increase the effect of Prestige Booster, and Prestige Booster effect multiplies point gain per completion<br>Currently: x" + format(this.rewardEffect()) + "<br>Completions: " + challengeCompletions(this.layer,this.id) + "/10"},
             goalDescription() {return format(this.goal()) + " Points"},
             canComplete() {return player.points.gte(this.goal())},
             rewardEffect() {return new Decimal (challengeCompletions(this.layer,this.id)).times(0.25).add(1)},
@@ -674,7 +674,7 @@ addLayer("m", {
     branches: ["pp"],
     color: "#9B00FF",
     effectDescription() {
-        return " unlocking " + player.m.total.min(6) + " buyables (based on total, max of 6) and increasing their effects by x" + player.m.points.sqrt().sqrt().times(100).floor().divide(100) + ".<br><br>You have " + format(player['m'].coins) + " coins."
+        return " unlocking " + player.m.total.min(6) + " Buyables (based on total, max of 6) and increasing their effects by x" + format(player.m.points.sqrt().sqrt()) + ".<br><br>You have " + format(player['m'].coins) + " coins."
     },
     requires: function() {
         if (inChallenge("m",11) || inChallenge("cp",11) || inChallenge("cp",12) || inChallenge("cp",21) || inChallenge("cp",22) || inChallenge("cp",31) || inChallenge("cp",32)) return new Decimal(1/0)
@@ -745,13 +745,13 @@ addLayer("m", {
                 return x.times(2).pow(1.2).floor().add(1)
             },
             effect(x=player[this.layer].buyables[this.id]) {
-                x = x.pow(1.05).divide(5).add(1).times(player.m.points.sqrt().sqrt().times(100).floor().divide(100))
+                x = x.pow(1.05).divide(5).add(1).times(player.m.points.sqrt().sqrt())
                 return x
             },
             display() {
-                let t = "Cost: " + this.cost() + "<br>"
+                let t = "Cost: " + format(this.cost()) + "<br>"
                 t = t + "Amount: " + getBuyableAmount(this.layer, this.id) + "<br>"
-                t = t + "Increases power generation and limit. Currently: x" + this.effect().times(100).floor().divide(100)
+                t = t + "Increases power generation and limit. Currently: x" + format(this.effect())
                 return t
             },
             unlocked() { return player[this.layer].total.gte(1) },
@@ -769,13 +769,13 @@ addLayer("m", {
                 return x
             },
             effect(x=player[this.layer].buyables[this.id]) {
-                x = x.divide(5).add(1).times(player.m.points.sqrt().sqrt().times(100).floor().divide(100))
+                x = x.divide(5).add(1).times(player.m.points.sqrt().sqrt())
                 return x
             },
             display() {
-                let t = "Cost: " + this.cost() + "<br>"
+                let t = "Cost: " + format(this.cost()) + "<br>"
                 t = t + "Amount: " + getBuyableAmount(this.layer, this.id) + "<br>"
-                t = t + "Increases the effect of Prestige Boosters. Currently: x" + this.effect()
+                t = t + "Increases the effect of Prestige Boosters. Currently: x" + format(this.effect())
                 return t
             },
             unlocked() { return player[this.layer].total.gte(2) },
