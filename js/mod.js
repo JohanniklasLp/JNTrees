@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "Just a test of the tree mechanics",
+	name: "Yet to be named",
 	id: "JNBasic",
 	author: "Johanniklas",
 	pointsName: "points",
@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
@@ -18,7 +18,19 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-<h2>Current Endgame: Prestige Milestone 1</h2><br><br>
+<h2>Current Endgame: 3 Market spaces or 3 Challenge Points (You are not supposed to unlock both yet)</h2><br><br>
+<h3>If something is marked as "NYI" (Not yet implemented), it is achievable only after the current endgame and you are not supposed to get it yet</h3><br>
+<h3>v0.4</h3><br>
+		- Added achievements<br>
+		- Removed the third milestones of the second layer<br>
+		- Added a different milestone in its place<br>
+		  Since they share the same ID, you might already have the new milestone even though you are not supposed to. To fix this, do a layer 3 reset or a hard reset. Or wait until I implement it and abuse it.<br>
+		  I'm not fixing it because only a select few people had access to this game yet anyway.<br>
+		- Moved the milestones of the second layer earlier<br>
+		- Changed the effects and prices of some Upgrades<br>
+		- Added the first two challenges<br>
+		- Added the first two buyables<br>
+		- Added the market in the market space layer<br><br>I would have included the other challenges and buyables too, but noticed how bad my code is now that I actually understand things. The next update will include them, and will release after rewriting parts of the code
 <h3>v0.4pre3.5</h3><br>
 		- Fixed Challenge Points not using the same price-increasing formula as Market Spaces<br><br>
 <h3>v0.4pre3.4</h3><br>
@@ -88,7 +100,9 @@ function getPointGen() {
 	if (hasUpgrade('p', 11)) gain = gain.times(2).times(player['b'].points.divide(10).add(1))
 	if (hasUpgrade('p', 12)) gain = gain.times(upgradeEffect('p', 12))
 	if (hasUpgrade('p', 32) && !hasMilestone('c', 0)) gain = new Decimal(0)
-	if (hasUpgrade('p', 32) && hasMilestone('c', 0) && (player['b'].best > 0 || player['pp'].best > 0)) gain = gain.add(100)
+	if (hasUpgrade('p', 32) && hasMilestone('c', 0) && hasAchievement("a", 11)) gain = gain.add(100)
+	if (hasChallenge("cp",12)) gain = gain.times(player['b'].points.divide(10).add(1).times(buyableEffect("m",12)).times(challengeEffect("cp",12)).pow(challengeCompletions("cp",12)).pow(challengeCompletions("cp",12)))
+	if (hasChallenge("cp",11)) gain = gain.times(player['pp'].power.points.sqrt().sqrt().max(1).times(challengeEffect("cp",11)).divide(2).pow(challengeCompletions("cp",11)).max(1))
 	if (player.points.gte(10000000)) gain = gain.pow(0.5)
 	if (player.points.gte(20000000)) gain = gain.pow(0.5)
 	if (player.points.gte(30000000)) gain = gain.pow(0.5)
@@ -106,7 +120,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasMilestone('p',0)
+	return player.cp.points.gte(3) || player.m.points.gte(3)
 }
 
 
