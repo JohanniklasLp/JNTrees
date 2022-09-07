@@ -13,13 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.0.1",
+	num: "0.4.1",
 	name: "This is becoming challenging",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 <h2>Current Endgame: 3 Market spaces or 3 Challenge Points (You are not supposed to unlock both yet)</h2><br><br>
 <h3>If something is marked as "NYI" (Not yet implemented), it is achievable only after the current endgame and you are not supposed to get it yet</h3><br>
+<h3>v0.4.1</h3><br>
+		- Fixed some multipliers having a default value of 0 
 <h3>v0.4.0.1</h3><br>
 		- Removed most of the floor() and round() operations and replaced them with format() since rounding didn't have the effect I wanted for texts
 		- Hopefully didn't break anything (at most some of the texts will show a value that is 2OoMs too small or too big)

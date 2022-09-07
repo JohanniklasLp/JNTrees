@@ -745,7 +745,7 @@ addLayer("m", {
                 return x.times(2).pow(1.2).floor().add(1)
             },
             effect(x=player[this.layer].buyables[this.id]) {
-                x = x.pow(1.05).divide(5).add(1).times(player.m.points.sqrt().sqrt())
+                x = x.pow(1.05).divide(5).add(1).times(player.m.points.sqrt().sqrt()).max(1)
                 return x
             },
             display() {
@@ -769,7 +769,7 @@ addLayer("m", {
                 return x
             },
             effect(x=player[this.layer].buyables[this.id]) {
-                x = x.divide(5).add(1).times(player.m.points.sqrt().sqrt())
+                x = x.divide(5).add(1).times(player.m.points.sqrt().sqrt().max(1))
                 return x
             },
             display() {
